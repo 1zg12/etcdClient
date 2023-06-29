@@ -3,6 +3,7 @@ package com.best2lwjj.etcd.client;
 import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.KV;
+import io.etcd.jetcd.Watch;
 import io.etcd.jetcd.kv.GetResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,5 +41,13 @@ public class EtcdClient {
 
 // delete the key
 //        kvClient.delete(key).get();
+    }
+    @EventListener(ApplicationReadyEvent.class)
+    public void watch() throws ExecutionException, InterruptedException {
+        Watch kvClient = client.getWatchClient();
+        ByteSequence key = ByteSequence.from("commitToSOR".getBytes());
+
+        kvClient.watch(ByteSequence.from("commitToSOR".getBytes()), watchResponse -> log.info("listening to commitToSOR {}", watchResponse));
+
     }
 }
